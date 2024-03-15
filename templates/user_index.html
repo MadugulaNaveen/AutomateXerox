@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User_Main_Page</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+  <div class="container center">
+    <form action="xerox_details" method="post" class="form center" enctype="multipart/form-data">
+      <input type="file" id="fileUpload" name="files" multiple required>
+      {% csrf_token %}
+      <div class="input center">
+        <button type="submit">UploadFiles</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

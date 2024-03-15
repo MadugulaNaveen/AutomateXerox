@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+  <div class="container padding-2">
+    <div class="width-90">
+    {% if orders %}
+    <h1 class="center margin">Orders</h1>
+    <table id="myTable">
+      <tr>
+        <th>User_Name</th>
+        <th>Order_ID</th>
+        <th>Order_Cost</th>
+        <th>Document_Name</th>
+        <th>Files</th>
+        <th>Printed/Not</th>
+        <th>Xerox</th>
+      </tr>
+        {% for order in orders %}
+        <tr>
+        <td class="user_name">{{ order.user.username }}</td>
+        <td class="order_id">{{ order.order_id}}</td>
+        <td class="order_cost">{{order.cost}}</td>
+        <td>
+          {% for document in order.documents %}
+            <h4>{{ document.name }}</h4>
+            <br>
+          {% endfor %}
+        </td>
+        <td>
+          {% for document in order.documents %}
+            <h4><a href="{{document.file.url}}">Download File</a></h4>
+            <br>
+          {% endfor %}
+        </td>
+        <td>
+          <form method="post" action="">
+            {% csrf_token %}
+            <input type="submit" name="xerox" value="Yes">
+          </form>
+        </td>
+        <td>
+          <form method="post" action="{% url 'delete_row' order.id %}">
+            {% csrf_token %}
+            <input type="submit" name="xerox" value="Received">
+          </form>
+        </td>
+        {% endfor %}    
+      </table>
+      {% else %}
+        <h1 class="center">No Orders Yet</h1>
+      {% endif %}
+
+  </div>
+  </div>
+  <div id="dataDisplay"></div>
+  <script>
+    var endpoint='ws://' + window.location.host + '/ws/orders/';
+    var socket = new WebSocket(endpoint)
+    console.log(endpoint)
+    socket.onopen = function(e) {
+      console.log("Connection established")
+    }
+    
+    const dataDisplay = document.getElementById('dataDisplay');
+   socket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        console.log(data);
+        addData(data);
+        dataDisplay.textContent = JSON.stringify(data);
+    }; 
+
+    function addData(newRowData){
+      var table = document.getElementById("myTable");
+
+      // Create a new row
+      var newRow = table.insertRow();
+    
+      // Add cells to the new row and populate with data
+      var userCell = newRow.insertCell(0);
+      userCell.innerHTML = newRowData.username;
+    
+      var orderIdCell = newRow.insertCell(1);
+      orderIdCell.innerHTML = newRowData.id;
+    
+      var orderCostCell = newRow.insertCell(2);
+      orderCostCell.innerHTML = newRowData.cost;
+      var documentNameCell = newRow.insertCell(3);
+      var documentNameList = newRowData.documentNames.join(", "); // Join document names into a string
+      documentNameCell.innerHTML = documentNameList;
+
+      var filesCell = newRow.insertCell(4);
+      for (var i = 0; i < newRowData.documentUrls.length; i++) {
+        var fileLink = document.createElement("a");
+        fileLink.href = newRowData.documentUrls[i];
+        fileLink.innerHTML = "Download File " + (i + 1);
+        filesCell.appendChild(fileLink);
+        if (i < newRowData.documentUrls.length - 1) {
+          filesCell.innerHTML += "<br>"; // Add line break between links
+        }
+      }
+
+      var printedCell = newRow.insertCell(5);
+      printedCell.innerHTML = '<form method="post" action=""><input type="submit" name="xerox" value="Yes"></form>';
+
+      var xeroxCell = newRow.insertCell(6);
+      xeroxCell.innerHTML = '<form method="post" action=""><input type="submit" name="xerox" value="Received"></form>';
+    }
+    
+
+  </script>
+</body>
+</html>

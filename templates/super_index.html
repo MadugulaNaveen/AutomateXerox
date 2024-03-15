@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+  <div class="container center">
+    <div class="page">
+    <form action="update" method="post" class="center">
+      {% csrf_token %}
+      <div class="input">
+        Cost Per Page :
+      </div>
+        <input type="number" name="Cost_Per_Page" id="" placeholder="Cost Per Page" required>
+      <div class="input center">
+        <button type="submit">Update</button>
+      </div>
+    </form>
+      <p class="message"><a class='Link' href="{% url 'orders' %}">View Orders</a></p>
+    </div>
+  </div>
+</body>
+</html>

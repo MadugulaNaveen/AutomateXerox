@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{% static 'login.css' %}">
+</head>
+<body>
+  <div class="login-page">
+  <div class="form">
+    <div class="content">
+    <form class="register-form" action="register" method="post">
+      {% csrf_token %}
+      <input type="text" placeholder="Name" name="name" required/>
+      <input type="text" name="user_name" placeholder="User_name"  required/>
+      <input type="password" name="password1" placeholder="Password" required/>
+      <input type="password" name="password2" placeholder="Confirm Password" required/>
+      <input type="Number" placeholder="Phone Number" name='ph_no' />
+      <input type="text" placeholder="Email address" name='email'/>
+      <button type="submit">create</button>
+      <p class="message">Already registered? <a class='abcd' href="#">Sign In</a></p>
+    </form>
+    <form class="login-form" action="login" method="post">
+      {% csrf_token %}
+      <input type="text" placeholder="user_name" name="user_name" required/>
+      <input type="password" placeholder="password" name="password" required/>
+      <button type="submit">login</button>
+      <p class="message">Not registered? <a class='abcd' href="#">Create an account</a></p>
+    </form>
+  </div>
+</div>
+<div class='messages' style="">
+  {% for message in messages %}
+      {{message}}
+  {% endfor %}
+</div>
+</div>
+
+<script src="{% static 'app.js' %}"></script>
+
+</body>
+</html>

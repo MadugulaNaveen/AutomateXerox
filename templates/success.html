@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+  <div class="container center">
+    <div class="form center">
+    <h3>Payment is successful</h3>
+    </div>
+  </div>
+
+  <script>
+    var orders = {{ orders|safe }};
+    var endpoint = 'ws://' + window.location.host + '/ws/paymentSuccessful/';
+    var socket = new WebSocket(endpoint);
+    console.log(endpoint);
+
+    socket.onopen = function(e) {
+      console.log("Connection established");
+      socket.send(JSON.stringify(orders));
+    };
+
+    socket.onmessage = function(e) {
+      console.log(e.data);
+    };
+  </script>
+  
+</body>
+</html>
